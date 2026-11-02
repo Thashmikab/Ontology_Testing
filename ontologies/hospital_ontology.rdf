@@ -1,0 +1,681 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xml:base="http://www.example.org/ontologies/clinical-decision-support"
+         xmlns="http://www.example.org/ontologies/clinical-decision-support#">
+
+<owl:Ontology rdf:about="http://www.example.org/ontologies/clinical-decision-support"/>
+
+<owl:ObjectProperty rdf:about="#suffersFrom">
+  <rdfs:domain rdf:resource="#Patient"/>
+  <rdfs:range rdf:resource="#Disease"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasHeartDisease">
+  <rdfs:subPropertyOf rdf:resource="#suffersFrom"/>
+  <rdfs:range rdf:resource="#HeartDisease"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasPulmonaryDisease">
+  <rdfs:subPropertyOf rdf:resource="#suffersFrom"/>
+  <rdfs:range rdf:resource="#PulmonaryDisease"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasInjury">
+  <rdfs:subPropertyOf rdf:resource="#suffersFrom"/>
+  <rdfs:range rdf:resource="#Injury"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasSymptom">
+  <rdfs:domain rdf:resource="#Patient"/>
+  <rdfs:range rdf:resource="#Symptom"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#takes">
+  <rdfs:domain rdf:resource="#Patient"/>
+  <rdfs:range rdf:resource="#Medicine"/>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The patient is currently prescribed this medicine.</rdfs:comment>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#isAllergicTo">
+  <rdfs:domain rdf:resource="#Patient"/>
+  <rdfs:range rdf:resource="#Medicine"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#attendedBy">
+  <rdfs:domain rdf:resource="#Patient"/>
+  <rdfs:range rdf:resource="#Doctor"/>
+  <owl:inverseOf rdf:resource="#attends"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#attends">
+  <owl:inverseOf rdf:resource="#attendedBy"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#worksIn">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  <rdfs:domain rdf:resource="#Doctor"/>
+  <rdfs:range rdf:resource="#Department"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#managedBy">
+  <rdfs:domain rdf:resource="#Disease"/>
+  <rdfs:range rdf:resource="#Department"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#shouldBeReferredTo">
+  <rdfs:domain rdf:resource="#Patient"/>
+  <rdfs:range rdf:resource="#Department"/>
+  <owl:propertyChainAxiom>
+    <rdf:Description>
+      <rdf:first rdf:resource="#suffersFrom"/>
+      <rdf:rest>
+        <rdf:Description>
+          <rdf:first rdf:resource="#managedBy"/>
+          <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+        </rdf:Description>
+      </rdf:rest>
+    </rdf:Description>
+  </owl:propertyChainAxiom>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Property chain: suffersFrom o managedBy. Never asserted by hand.</rdfs:comment>
+</owl:ObjectProperty>
+
+<owl:DatatypeProperty rdf:about="#hasAge">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  <rdfs:domain rdf:resource="#Patient"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+</owl:DatatypeProperty>
+
+<owl:Class rdf:about="#Person">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Patient">
+  <rdfs:subClassOf rdf:resource="#Person"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Doctor">
+  <rdfs:subClassOf rdf:resource="#Person"/>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Not disjoint with Patient on purpose: a doctor can also be a patient.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:about="#Department">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Disease">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#HeartDisease">
+  <rdfs:subClassOf rdf:resource="#Disease"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#managedBy"/>
+      <owl:hasValue rdf:resource="#Cardiology"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#CardiacArrhythmia">
+  <rdfs:subClassOf rdf:resource="#HeartDisease"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Hypertension">
+  <rdfs:subClassOf rdf:resource="#HeartDisease"/>
+</owl:Class>
+
+<owl:Class rdf:about="#CoronaryArteryDisease">
+  <rdfs:subClassOf rdf:resource="#HeartDisease"/>
+</owl:Class>
+
+<owl:Class rdf:about="#PulmonaryDisease">
+  <rdfs:subClassOf rdf:resource="#Disease"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#managedBy"/>
+      <owl:hasValue rdf:resource="#Respiratory"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Asthma">
+  <rdfs:subClassOf rdf:resource="#PulmonaryDisease"/>
+</owl:Class>
+
+<owl:Class rdf:about="#COPD">
+  <rdfs:subClassOf rdf:resource="#PulmonaryDisease"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Pneumonia">
+  <rdfs:subClassOf rdf:resource="#PulmonaryDisease"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Injury">
+  <rdfs:subClassOf rdf:resource="#Disease"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#managedBy"/>
+      <owl:hasValue rdf:resource="#Orthopaedics"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Fracture">
+  <rdfs:subClassOf rdf:resource="#Injury"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Sprain">
+  <rdfs:subClassOf rdf:resource="#Injury"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Arthritis">
+  <rdfs:subClassOf rdf:resource="#Injury"/>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Placed under Injury to match the seminar diagram (medically it is a joint condition).</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:about="#Symptom">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ChestPain">
+  <rdfs:subClassOf rdf:resource="#Symptom"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Palpitations">
+  <rdfs:subClassOf rdf:resource="#Symptom"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Wheezing">
+  <rdfs:subClassOf rdf:resource="#Symptom"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Breathlessness">
+  <rdfs:subClassOf rdf:resource="#Symptom"/>
+</owl:Class>
+
+<owl:Class rdf:about="#JointPain">
+  <rdfs:subClassOf rdf:resource="#Symptom"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Fever">
+  <rdfs:subClassOf rdf:resource="#Symptom"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Medicine">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Antibiotic">
+  <rdfs:subClassOf rdf:resource="#Medicine"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Penicillin">
+  <rdfs:subClassOf rdf:resource="#Antibiotic"/>
+  <owl:disjointWith rdf:resource="#Macrolide"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Macrolide">
+  <rdfs:subClassOf rdf:resource="#Antibiotic"/>
+</owl:Class>
+
+<owl:Class rdf:about="#BetaBlocker">
+  <rdfs:subClassOf rdf:resource="#Medicine"/>
+</owl:Class>
+
+<owl:Class rdf:about="#SelectiveBetaBlocker">
+  <rdfs:subClassOf rdf:resource="#BetaBlocker"/>
+  <owl:disjointWith rdf:resource="#NonSelectiveBetaBlocker"/>
+</owl:Class>
+
+<owl:Class rdf:about="#NonSelectiveBetaBlocker">
+  <rdfs:subClassOf rdf:resource="#BetaBlocker"/>
+</owl:Class>
+
+<owl:Class rdf:about="#NSAID">
+  <rdfs:subClassOf rdf:resource="#Medicine"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Anticoagulant">
+  <rdfs:subClassOf rdf:resource="#Medicine"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Bronchodilator">
+  <rdfs:subClassOf rdf:resource="#Medicine"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Analgesic">
+  <rdfs:subClassOf rdf:resource="#Medicine"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Cardiologist">
+  <rdfs:subClassOf rdf:resource="#Doctor"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#Doctor"/>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#worksIn"/>
+          <owl:hasValue rdf:resource="#Cardiology"/>
+        </owl:Restriction>
+      </owl:intersectionOf>
+    </owl:Class>
+  </owl:equivalentClass>
+</owl:Class>
+
+<owl:Class rdf:about="#Pulmonologist">
+  <rdfs:subClassOf rdf:resource="#Doctor"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#Doctor"/>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#worksIn"/>
+          <owl:hasValue rdf:resource="#Respiratory"/>
+        </owl:Restriction>
+      </owl:intersectionOf>
+    </owl:Class>
+  </owl:equivalentClass>
+</owl:Class>
+
+<owl:Class rdf:about="#Orthopedic">
+  <rdfs:subClassOf rdf:resource="#Doctor"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#Doctor"/>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#worksIn"/>
+          <owl:hasValue rdf:resource="#Orthopaedics"/>
+        </owl:Restriction>
+      </owl:intersectionOf>
+    </owl:Class>
+  </owl:equivalentClass>
+</owl:Class>
+
+<owl:Class rdf:about="#HeartPatient">
+  <rdfs:subClassOf rdf:resource="#Patient"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#Patient"/>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#suffersFrom"/>
+          <owl:someValuesFrom rdf:resource="#HeartDisease"/>
+        </owl:Restriction>
+      </owl:intersectionOf>
+    </owl:Class>
+  </owl:equivalentClass>
+</owl:Class>
+
+<owl:Class rdf:about="#PulmonaryPatient">
+  <rdfs:subClassOf rdf:resource="#Patient"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#Patient"/>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#suffersFrom"/>
+          <owl:someValuesFrom rdf:resource="#PulmonaryDisease"/>
+        </owl:Restriction>
+      </owl:intersectionOf>
+    </owl:Class>
+  </owl:equivalentClass>
+</owl:Class>
+
+<owl:Class rdf:about="#Injured">
+  <rdfs:subClassOf rdf:resource="#Patient"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#Patient"/>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#suffersFrom"/>
+          <owl:someValuesFrom rdf:resource="#Injury"/>
+        </owl:Restriction>
+      </owl:intersectionOf>
+    </owl:Class>
+  </owl:equivalentClass>
+</owl:Class>
+
+<owl:Class rdf:about="#MultiMorbidPatient">
+  <rdfs:subClassOf rdf:resource="#Patient"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#HeartPatient"/>
+        <rdf:Description rdf:about="#PulmonaryPatient"/>
+      </owl:intersectionOf>
+    </owl:Class>
+  </owl:equivalentClass>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Has both heart and lung disease.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:about="#OlderPatient">
+  <rdfs:subClassOf rdf:resource="#Patient"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#Patient"/>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#hasAge"/>
+          <owl:someValuesFrom>
+            <rdfs:Datatype>
+              <owl:onDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+              <owl:withRestrictions>
+                <rdf:Description>
+                  <rdf:first>
+                    <rdf:Description>
+                      <xsd:minInclusive rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">65</xsd:minInclusive>
+                    </rdf:Description>
+                  </rdf:first>
+                  <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+                </rdf:Description>
+              </owl:withRestrictions>
+            </rdfs:Datatype>
+          </owl:someValuesFrom>
+        </owl:Restriction>
+      </owl:intersectionOf>
+    </owl:Class>
+  </owl:equivalentClass>
+</owl:Class>
+
+<owl:Class rdf:about="#SuspectedHeartPatient">
+  <rdfs:subClassOf rdf:resource="#Patient"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#Patient"/>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#hasSymptom"/>
+          <owl:someValuesFrom>
+            <owl:Class>
+              <owl:unionOf rdf:parseType="Collection">
+                <rdf:Description rdf:about="#ChestPain"/>
+                <rdf:Description rdf:about="#Palpitations"/>
+              </owl:unionOf>
+            </owl:Class>
+          </owl:someValuesFrom>
+        </owl:Restriction>
+      </owl:intersectionOf>
+    </owl:Class>
+  </owl:equivalentClass>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Triage: symptoms point to the heart, no diagnosis needed.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:about="#PrescriptionAlert">
+  <rdfs:subClassOf rdf:resource="#Patient"/>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Patients the reasoner flags for a pharmacist or doctor to review.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:about="#BetaBlockerAsthmaAlert">
+  <rdfs:subClassOf rdf:resource="#PrescriptionAlert"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#Patient"/>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#suffersFrom"/>
+          <owl:someValuesFrom rdf:resource="#Asthma"/>
+        </owl:Restriction>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#takes"/>
+          <owl:someValuesFrom rdf:resource="#NonSelectiveBetaBlocker"/>
+        </owl:Restriction>
+      </owl:intersectionOf>
+    </owl:Class>
+  </owl:equivalentClass>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Non-selective beta-blockers can trigger bronchospasm in asthma.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:about="#BleedingRiskAlert">
+  <rdfs:subClassOf rdf:resource="#PrescriptionAlert"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#Patient"/>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#takes"/>
+          <owl:someValuesFrom rdf:resource="#Anticoagulant"/>
+        </owl:Restriction>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#takes"/>
+          <owl:someValuesFrom rdf:resource="#NSAID"/>
+        </owl:Restriction>
+      </owl:intersectionOf>
+    </owl:Class>
+  </owl:equivalentClass>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Anticoagulant plus NSAID raises the risk of bleeding.</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:about="#OlderPatientNSAIDAlert">
+  <rdfs:subClassOf rdf:resource="#PrescriptionAlert"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#OlderPatient"/>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#takes"/>
+          <owl:someValuesFrom rdf:resource="#NSAID"/>
+        </owl:Restriction>
+      </owl:intersectionOf>
+    </owl:Class>
+  </owl:equivalentClass>
+</owl:Class>
+
+<owl:Class rdf:about="#PenicillinAllergicPatient">
+  <rdfs:subClassOf rdf:resource="#Patient"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#Patient"/>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#isAllergicTo"/>
+          <owl:someValuesFrom rdf:resource="#Penicillin"/>
+        </owl:Restriction>
+      </owl:intersectionOf>
+    </owl:Class>
+  </owl:equivalentClass>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#takes"/>
+      <owl:allValuesFrom>
+        <owl:Class>
+          <owl:complementOf rdf:resource="#Penicillin"/>
+        </owl:Class>
+      </owl:allValuesFrom>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Hard safety rule: may only take medicines that are NOT penicillins.</rdfs:comment>
+</owl:Class>
+
+<owl:NamedIndividual rdf:about="#Cardiology">
+  <rdf:type rdf:resource="#Department"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#Respiratory">
+  <rdf:type rdf:resource="#Department"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#Orthopaedics">
+  <rdf:type rdf:resource="#Department"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#amoxicillin">
+  <rdf:type rdf:resource="#Penicillin"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#benzylpenicillin">
+  <rdf:type rdf:resource="#Penicillin"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#clarithromycin">
+  <rdf:type rdf:resource="#Macrolide"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#propranolol">
+  <rdf:type rdf:resource="#NonSelectiveBetaBlocker"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#bisoprolol">
+  <rdf:type rdf:resource="#SelectiveBetaBlocker"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#ibuprofen">
+  <rdf:type rdf:resource="#NSAID"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#warfarin">
+  <rdf:type rdf:resource="#Anticoagulant"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#salbutamol">
+  <rdf:type rdf:resource="#Bronchodilator"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#paracetamol">
+  <rdf:type rdf:resource="#Analgesic"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#doc_1">
+  <rdf:type rdf:resource="#Doctor"/>
+  <worksIn rdf:resource="#Orthopaedics"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#doc_2">
+  <rdf:type rdf:resource="#Doctor"/>
+  <worksIn rdf:resource="#Cardiology"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#doc_3">
+  <rdf:type rdf:resource="#Doctor"/>
+  <worksIn rdf:resource="#Respiratory"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#arthritis">
+  <rdf:type rdf:resource="#Arthritis"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#pat_id_1234">
+  <rdf:type rdf:resource="#Patient"/>
+  <hasInjury rdf:resource="#arthritis"/>
+  <attendedBy rdf:resource="#doc_1"/>
+  <takes rdf:resource="#ibuprofen"/>
+  <hasAge rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">71</hasAge>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#cardiacArrhythmia">
+  <rdf:type rdf:resource="#CardiacArrhythmia"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#pat_id_5">
+  <rdf:type rdf:resource="#Patient"/>
+  <hasHeartDisease rdf:resource="#cardiacArrhythmia"/>
+  <takes rdf:resource="#ibuprofen"/>
+  <takes rdf:resource="#warfarin"/>
+  <hasAge rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">58</hasAge>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#asthma_12">
+  <rdf:type rdf:resource="#Asthma"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#hypertension_12">
+  <rdf:type rdf:resource="#Hypertension"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#pat_id_12">
+  <rdf:type rdf:resource="#Patient"/>
+  <suffersFrom rdf:resource="#asthma_12"/>
+  <suffersFrom rdf:resource="#hypertension_12"/>
+  <takes rdf:resource="#salbutamol"/>
+  <takes rdf:resource="#propranolol"/>
+  <hasAge rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">46</hasAge>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#chestPain_20">
+  <rdf:type rdf:resource="#ChestPain"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#pat_id_20">
+  <rdf:type rdf:resource="#Patient"/>
+  <hasSymptom rdf:resource="#chestPain_20"/>
+  <hasAge rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">39</hasAge>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#pneumonia_33">
+  <rdf:type rdf:resource="#Pneumonia"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#pat_id_33">
+  <rdf:type rdf:resource="#Patient"/>
+  <hasPulmonaryDisease rdf:resource="#pneumonia_33"/>
+  <isAllergicTo rdf:resource="#benzylpenicillin"/>
+  <takes rdf:resource="#clarithromycin"/>
+  <hasAge rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">29</hasAge>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">LIVE DEMO: add 'takes amoxicillin' and run the reasoner.</rdfs:comment>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#fracture_41">
+  <rdf:type rdf:resource="#Fracture"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#pat_id_41">
+  <rdf:type rdf:resource="#Patient"/>
+  <hasInjury rdf:resource="#fracture_41"/>
+  <takes rdf:resource="#paracetamol"/>
+  <hasAge rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">24</hasAge>
+</owl:NamedIndividual>
+
+<owl:AllDifferent>
+  <owl:distinctMembers rdf:parseType="Collection">
+    <rdf:Description rdf:about="#doc_1"/>
+    <rdf:Description rdf:about="#doc_2"/>
+    <rdf:Description rdf:about="#doc_3"/>
+  </owl:distinctMembers>
+</owl:AllDifferent>
+
+<owl:AllDifferent>
+  <owl:distinctMembers rdf:parseType="Collection">
+    <rdf:Description rdf:about="#amoxicillin"/>
+    <rdf:Description rdf:about="#benzylpenicillin"/>
+    <rdf:Description rdf:about="#clarithromycin"/>
+    <rdf:Description rdf:about="#bisoprolol"/>
+    <rdf:Description rdf:about="#propranolol"/>
+    <rdf:Description rdf:about="#ibuprofen"/>
+    <rdf:Description rdf:about="#warfarin"/>
+    <rdf:Description rdf:about="#salbutamol"/>
+    <rdf:Description rdf:about="#paracetamol"/>
+  </owl:distinctMembers>
+</owl:AllDifferent>
+
+<owl:AllDifferent>
+  <owl:distinctMembers rdf:parseType="Collection">
+    <rdf:Description rdf:about="#Cardiology"/>
+    <rdf:Description rdf:about="#Respiratory"/>
+    <rdf:Description rdf:about="#Orthopaedics"/>
+  </owl:distinctMembers>
+</owl:AllDifferent>
+
+<owl:AllDisjointClasses>
+  <owl:members rdf:parseType="Collection">
+    <rdf:Description rdf:about="#HeartDisease"/>
+    <rdf:Description rdf:about="#PulmonaryDisease"/>
+    <rdf:Description rdf:about="#Injury"/>
+  </owl:members>
+</owl:AllDisjointClasses>
+
+<owl:AllDisjointClasses>
+  <owl:members rdf:parseType="Collection">
+    <rdf:Description rdf:about="#Person"/>
+    <rdf:Description rdf:about="#Department"/>
+    <rdf:Description rdf:about="#Disease"/>
+    <rdf:Description rdf:about="#Symptom"/>
+    <rdf:Description rdf:about="#Medicine"/>
+  </owl:members>
+</owl:AllDisjointClasses>
+
+
+</rdf:RDF>
