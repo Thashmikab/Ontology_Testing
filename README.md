@@ -1,6 +1,14 @@
 # Ontology Testing: from a Protégé ontology to modern AI
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Thashmikab/Ontology_Testing/blob/main/ontology_to_ai.ipynb)
+![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)
+![OWL](https://img.shields.io/badge/OWL_2-HermiT_reasoner-2bb3a3)
+![GraphRAG](https://img.shields.io/badge/GraphRAG-Groq-f0a33a)
+![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey)
+
+<p align="center">
+  <img src="images/pipeline.svg" alt="Animated pipeline: a Protégé .rdf file goes through the HermiT reasoner, becomes a knowledge graph with inferred links, and grounds an LLM answer that cites facts" width="100%">
+</p>
 
 You've built an ontology in Protégé and saved it as `.rdf`. What now? This notebook takes that file and uses it the way ontologies are used in AI today. It runs a reasoner, turns the ontology into a knowledge graph, grounds an open LLM in it, and uses it as a safety check on what the LLM suggests.
 
